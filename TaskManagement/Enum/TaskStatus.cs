@@ -1,6 +1,6 @@
 ﻿namespace TaskManagement.Enum;
 
-internal enum TaskStatus
+public enum MyTaskStatus
 {
     ToDo,
     InProgress,

@@ -19,21 +19,17 @@ internal class TaskService : ITaskService
         }
         _tasks.Add(task);
     }
-
     public void DeleteById(int id)
     {
-        foreach (var task in _tasks)
+        var task = _tasks.FirstOrDefault(t => t.Id == id);
+        if (task == null)
         {
-            if (task.Id == id)
-            {
-                _tasks.Remove(task);
-                return;
-            }
+            throw new NotFoundException("Task not found.");
         }
-        throw new NotFoundException("Task not found.");
+        _tasks.Remove(task);
     }
 
-    public List<MyTask> GetByStatus(TaskStatus status)
+    public List<MyTask> GetByStatus(MyTaskStatus status)
     {
         List<MyTask> tasksByStatus = new List<MyTask>();
         foreach (var task in _tasks)
@@ -53,6 +49,36 @@ internal class TaskService : ITaskService
             if (task.Title == title)
             {
                 return task;
+            }
+        }
+        throw new NotFoundException("Task not found.");
+    }
+    public List<MyTask> GetByPriority(TaskPriority priority)
+    {
+        List<MyTask> tasksByPriority = new List<MyTask>();
+        foreach (var task in _tasks)
+        {
+            if (task.Priority == priority)
+            {
+                tasksByPriority.Add(task);
+            }
+        }
+
+        if (tasksByPriority.Count == 0)
+        {
+            throw new NotFoundException($"No tasks found with priority '{priority}'.");
+        }
+
+        return tasksByPriority;
+    }
+    public void ChangePriority(int id, TaskPriority newPriority)
+    {
+        foreach (var task in _tasks)
+        {
+            if (task.Id == id)
+            {
+                task.Priority = newPriority;
+                return;
             }
         }
         throw new NotFoundException("Task not found.");
