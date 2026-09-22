@@ -10,4 +10,6 @@ internal interface ITaskService
     public void DeleteById(int id);
     public List<MyTask> GetByPriority(TaskPriority priority);
     public void ChangePriority(int id, TaskPriority newPriority);
+    public void AssignTaskToUser(int taskId, int userId);
+    public List<MyTask> GetTasksByUserId(int userId);
 }

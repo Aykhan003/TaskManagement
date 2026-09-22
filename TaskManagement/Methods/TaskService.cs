@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Assignment_Functional.Methods;
+using System.Data;
 using TaskManagement.Exceptions;
 using TaskManagement.Services;
 
@@ -7,7 +8,7 @@ namespace TaskManagement.Methods;
 internal class TaskService : ITaskService
 {
     private static List<MyTask> _tasks = new List<MyTask>();
-
+    private static List<TasksAssignment> _taskAssignments = new List<TasksAssignment>();
     public void AddTask(MyTask task)
     {
         foreach (var existingTask in _tasks)
@@ -82,5 +83,40 @@ internal class TaskService : ITaskService
             }
         }
         throw new NotFoundException("Task not found.");
+    }
+    public void AssignTaskToUser(int taskId, int userId)
+    {
+        var task = _tasks.FirstOrDefault(t => t.Id == taskId);
+        var user = UserService.GetUserById(userId);
+        if (task == null || user == null)
+        {
+            throw new NotFoundException("Task or user not found.");
+        }
+        _taskAssignments.Add(new TasksAssignment(taskId, userId));
+    }
+    public List<MyTask> GetTasksByUserId(int userId)
+    {
+        var user = UserService.GetUserById(userId);
+        if (user == null)
+        {
+            throw new NotFoundException("User not found.");
+        }
+        List<MyTask> tasksForUser = new List<MyTask>();
+        foreach (var assignment in _taskAssignments)
+        {
+            if (assignment.UserId == userId)
+            {
+                var task = _tasks.FirstOrDefault(t => t.Id == assignment.TaskId);
+                if (task != null)
+                {
+                    tasksForUser.Add(task);
+                }
+            }
+        }
+        if (tasksForUser.Count == 0)
+        {
+            throw new NotFoundException("No tasks assigned to this user.");
+        }
+        return tasksForUser;
     }
 }
