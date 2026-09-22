@@ -1,6 +1,6 @@
 ﻿namespace TaskManagement.Methods;
 
-internal class MyTask
+public class MyTask
 {
     private static int _id;
     public int Id { get; set; }
@@ -21,4 +21,5 @@ internal class MyTask
     {
         return $"Id: {Id}, Title: {Title}, Commentary: {Commentary}, Created: {Created}, Deadline: {Deadline}, Status: {Status}";
     }
+    
 }
